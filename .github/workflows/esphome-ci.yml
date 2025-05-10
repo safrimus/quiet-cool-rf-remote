@@ -1,0 +1,49 @@
+name: ESPHome CI
+
+on:
+  push:
+    paths:
+      - '**.yaml'
+      - 'components/**'
+      - '.github/workflows/esphome-ci.yml'
+  pull_request:
+    paths:
+      - '**.yaml'
+      - 'components/**'
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install ESPHome
+        run: |
+          python -m pip install --upgrade pip
+          pip install esphome
+
+      - name: Install Platformio
+        run: |
+          pip install platformio
+
+      - name: Compile quietcool example
+        run: |
+          # create a dummy secrets.yaml so esphome compile won’t error out
+          cat <<EOF > secrets.yaml
+          wifi_ssid: dummy_ssid
+          wifi_password: dummy_password
+          api_enctryption_key: 1HUvrwkoGd889qBYWEjK7QtFbfIAE89r4p68rMxnc+U=
+          ota_password: dummy_ota_password
+          EOF
+          esphome compile quietcool-fan-example.yaml
+
+      - name: Compile quietcool example
+        run: |
+          cd arduino
+          pio run
