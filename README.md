@@ -5,6 +5,13 @@ Operate your remote controlled QuietCool Fan from ESPHome or Arduino.
 This project implements an RF remote control system for Quiet Cool fans using an ESP32 microcontroller and CC1101 RF module.
 The system can control various fan speeds and modes through RF signals.
 
+## WARNING WARNING WARNING
+**This should have been obvious to me before.  Alas, it wasn't.  Each RF remote has a unique ID built-in, and this code literally
+only works with my remote for that reason.  Currently, getting this working will take some effort decoding your individual remote. 
+Lame, I know.  Whatcha gonna do?
+**
+
+
 ![QuietCool Remote](images/quietcool_fan.png)
 
 # TL;DR -- get it running on ESPHome
