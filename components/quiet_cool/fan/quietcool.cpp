@@ -93,13 +93,16 @@ void QuietCool::sendPacket(const uint8_t cmd_code) {
 }
 
 const uint8_t QuietCool::getCommand(QuietCoolSpeed speed, QuietCoolDuration duration) {
+    ESP_LOGD(TAG, "getCommand got: speed=0x%02x, duration=0x%02x", speed, duration);
     const uint8_t off = QUIETCOOL_DURATION_OFF | QUIETCOOL_SPEED_LOW;
     switch (speed) {
     case QUIETCOOL_SPEED_HIGH:
     case QUIETCOOL_SPEED_MEDIUM:
     case QUIETCOOL_SPEED_LOW:
     break;
-    default: return off;
+    default:
+	ESP_LOGD(TAG, "unknown speed: 0x%02x", speed);
+	return off;
     };
 
     switch (duration) {
@@ -111,7 +114,9 @@ const uint8_t QuietCool::getCommand(QuietCoolSpeed speed, QuietCoolDuration dura
     case QUIETCOOL_DURATION_ON  :
     case QUIETCOOL_DURATION_OFF :
     break;
-    default: return off;
+    default:
+	ESP_LOGD(TAG, "unknown duration: 0x%02x", duration);
+	return off;
     }
     uint8_t result = speed | duration;
     ESP_LOGD(TAG, "Sending speed=0x%02x, duration=0x%02x: 0x%02x", speed, duration, result);
@@ -195,7 +200,7 @@ void QuietCool::begin() {
 }
 
 void QuietCool::send(QuietCoolSpeed speed, QuietCoolDuration duration) {
-    ESP_LOGI(TAG, "send(%d, %d)", speed, duration);
+    ESP_LOGI(TAG, "send(0x%02x, %0x%02x)", speed, duration);
     const uint8_t cmd_code = getCommand(speed, duration);
     ESP_LOGI(TAG, "cmd=%02x ", cmd_code);
     sendPacket(cmd_code);

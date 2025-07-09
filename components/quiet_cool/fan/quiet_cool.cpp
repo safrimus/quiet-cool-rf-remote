@@ -43,7 +43,9 @@ namespace esphome {
                 else if (this->speed_ < 1.5) qcspd = QUIETCOOL_SPEED_LOW;
                 else if (this->speed_ < 2.5) qcspd = QUIETCOOL_SPEED_MEDIUM;
                 else if (this->speed_ < 3.5) qcspd = QUIETCOOL_SPEED_HIGH;
-            }
+            } else {
+		qcdur = QUIETCOOL_DURATION_OFF;
+	    }
             if (this->qc_) this->qc_->send(qcspd, qcdur);
 
 
