@@ -9,8 +9,13 @@
 namespace esphome {
     namespace quiet_cool {
 
-        class QuietCoolFan : public Component, public fan::Fan, public spi::SPIDevice<spi::BIT_ORDER_MSB_FIRST, spi::CLOCK_POLARITY_LOW, spi::CLOCK_PHASE_LEADING, spi::DATA_RATE_1KHZ> {
+        class QuietCoolFan :
+	    public Component,
+	    public fan::Fan,
+	    public spi::SPIDevice<spi::BIT_ORDER_MSB_FIRST, spi::CLOCK_POLARITY_LOW, spi::CLOCK_PHASE_LEADING, spi::DATA_RATE_1KHZ>
+	{
         public:
+
             void dump_config() override;
             fan::FanTraits get_traits() override;
             void setup() override;  // initialise radio
@@ -21,6 +26,10 @@ namespace esphome {
                 this->gdo2_pin_ = gdo2;
                 this->pins_set_ = true;
             }
+	    void set_frequencies(float center_freq_mhz, float devation_khz) {
+		this->center_freq_mhz = center_freq_mhz;
+		this->deviation_khz = deviation_khz;
+	    }
 
         protected:
             void control(const fan::FanCall &call) override;
@@ -31,6 +40,8 @@ namespace esphome {
             uint8_t csn_pin_{};
             uint8_t gdo0_pin_{};
             uint8_t gdo2_pin_{};
+	    float center_freq_mhz{433.897};
+	    float deviation_khz{10};
             float speed_{0.0f};
             bool pins_set_{false};
             std::array<uint8_t, 7> remote_id_{{0x2D, 0xD4, 0x06, 0xCB, 0x00, 0xF7, 0xF2}};

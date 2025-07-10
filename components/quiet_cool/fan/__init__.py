@@ -13,6 +13,8 @@ from .. import quiet_cool_ns
 CONF_GDO0_PIN = "gdo0_pin"
 CONF_GDO2_PIN = "gdo2_pin"
 CONF_REMOTE_ID = "remote_id"
+CONF_FREQ_MHZ = "center_freq_mhz"
+CONF_DEVIATION_KHZ = "deviation_khz"
 
 DEPENDENCIES = ["spi"]
 
@@ -21,9 +23,11 @@ QuietCoolFan = quiet_cool_ns.class_("QuietCoolFan", cg.Component, fan.Fan, spi.S
 CONFIG_SCHEMA = fan.fan_schema(QuietCoolFan).extend(
     {
         cv.GenerateID(CONF_OUTPUT_ID): cv.declare_id(QuietCoolFan),
-        cv.Required(CONF_GDO0_PIN): cv.uint8_t,
-        cv.Required(CONF_GDO2_PIN): cv.uint8_t,
-        cv.Required(CONF_REMOTE_ID): cv.ensure_list(cv.hex_uint8_t),
+        cv.Required(CONF_GDO0_PIN                      ): cv.uint8_t,
+        cv.Required(CONF_GDO2_PIN                      ): cv.uint8_t,
+        cv.Required(CONF_REMOTE_ID                     ): cv.ensure_list(cv.hex_uint8_t),
+        cv.Optional(CONF_FREQ_MHZ     , default=433.897): cv.float_,
+        cv.Optional(CONF_DEVIATION_KHZ, default=10.0   ): cv.float_
     }
 ).extend(cv.COMPONENT_SCHEMA).extend(spi.spi_device_schema(cs_pin_required=True))
 
@@ -37,3 +41,4 @@ async def to_code(config):
     cs_num = config[spi.CONF_CS_PIN]["number"]
     cg.add(var.set_pins(cs_num, config[CONF_GDO0_PIN], config[CONF_GDO2_PIN]))
     cg.add(var.set_remote_id(config[CONF_REMOTE_ID]))
+    cg.add(var.set_frequencies(config[CONF_FREQ_MHZ], config[CONF_DEVIATION_KHZ]))

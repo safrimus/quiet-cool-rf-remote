@@ -121,8 +121,16 @@ const uint8_t QuietCool::getCommand(QuietCoolSpeed speed, QuietCoolDuration dura
     return result;
 }
 
-QuietCool::QuietCool(uint8_t csn, uint8_t gdo0, uint8_t gdo2, uint8_t sck, uint8_t miso, uint8_t mosi, const uint8_t* remote_id_in)
-    : csn_pin(csn), gdo0_pin(gdo0), gdo2_pin(gdo2), sck_pin(sck), miso_pin(miso), mosi_pin(mosi) {
+    QuietCool::QuietCool(uint8_t csn, uint8_t gdo0, uint8_t gdo2, uint8_t sck, uint8_t miso, uint8_t mosi, const uint8_t* remote_id_in, float center_freq, float deviation_khz) : 
+    csn_pin(csn),
+    gdo0_pin(gdo0),
+    gdo2_pin(gdo2),
+    sck_pin(sck),
+    miso_pin(miso),
+    mosi_pin(mosi),
+    center_freq_mhz(center_freq),
+    deviation_khz(deviation_khz)
+{
     for (int i = 0; i < 7; ++i) remote_id[i] = remote_id_in[i];
 }
 
@@ -161,12 +169,14 @@ bool QuietCool::initCC1101() {
     ELECHOUSE_cc1101.setGDO0(gdo0_pin);
 
     // Basic configuration
-    ELECHOUSE_cc1101.setMHZ(FREQ_MHZ);
+    ESP_LOGI(TAG, "Setting center frequency to %f MHz", center_freq_mhz);
+    ELECHOUSE_cc1101.setMHZ(center_freq_mhz);
     ELECHOUSE_cc1101.setPA(0);
 
     // Packet-related configuration
     ELECHOUSE_cc1101.setModulation(0);       // FSK
-    ELECHOUSE_cc1101.setDeviation(10);
+    ESP_LOGI(TAG, "Setting deviaion to %f kHz.  That's a total spread of %f kHz", deviation_khz, 2*deviation_khz);
+    ELECHOUSE_cc1101.setDeviation(deviation_khz);
     ELECHOUSE_cc1101.setDRate(2.398);
     ELECHOUSE_cc1101.setSyncMode(0);
     ELECHOUSE_cc1101.setWhiteData(false);
