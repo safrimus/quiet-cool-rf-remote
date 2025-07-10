@@ -55,11 +55,15 @@ void QuietCool::logBits(const uint8_t* data, size_t len) {
     bytesToBitString(data, len, bitstr, sizeof(bitstr));
     
     // Print bytes in hex format
-    ESP_LOGD(TAG, "Bytes sent: ");
-    for (size_t i = 0; i < len; i++) {
-        ESP_LOGD(TAG, "0x%02X ", data[i]);
-    }
     ESP_LOGD(TAG, "Bits sent: %s", bitstr);
+
+    bitstr[0] = 0;
+    for (size_t i = 0; i < len; i++) {
+	char bb[3];
+	snprintf(bb, 3, "%02X", data[i]);
+        strcat(bitstr, bb);
+    }
+    ESP_LOGD(TAG, "Bytes sent: %s", bitstr);
 }
 
 void QuietCool::sendRawData(const uint8_t* data, size_t len) {
@@ -69,9 +73,7 @@ void QuietCool::sendRawData(const uint8_t* data, size_t len) {
     }
     ESP_LOGD(TAG, "Sending %zu bytes (%zu bits)", len, len * 8);
     logBits(data, len);
-    ESP_LOGD(TAG, "[DEBUG] Before SendData");
     ELECHOUSE_cc1101.SendData((byte*)data, (byte)len);
-    ESP_LOGD(TAG, "[DEBUG] After SendData");
     delay(10);
 }
 
@@ -165,11 +167,11 @@ bool QuietCool::initCC1101() {
     ELECHOUSE_cc1101.setCCMode(1);
     ELECHOUSE_cc1101.Init();
 
-    ESP_LOGI(TAG, "Setting GDO0 pin to %d", gdo0_pin);
+    ESP_LOGE(TAG, "Setting GDO0 pin to %d", gdo0_pin);
     ELECHOUSE_cc1101.setGDO0(gdo0_pin);
 
     // Basic configuration
-    ESP_LOGI(TAG, "Setting center frequency to %f MHz", center_freq_mhz);
+    ESP_LOGE(TAG, "Setting center frequency to %f MHz", center_freq_mhz);
     ELECHOUSE_cc1101.setMHZ(center_freq_mhz);
     ELECHOUSE_cc1101.setPA(0);
 
