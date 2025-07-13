@@ -130,6 +130,33 @@ fan:
     gdo0_pin: 13
     gdo2_pin: 12
     remote_id: [0x2D, 0xD4, 0x06, 0xCB, 0x00, 0xF7, 0xF2]
+    # Optional:
+    # center_freq_mhz: 433.897
+    # deviation_khz: 10
+```
+
+---
+
+### QuietCool YAML Configuration Options
+
+| Option            | Required | Type         | Default    | Description                                                                 |
+|-------------------|----------|--------------|-----------|-----------------------------------------------------------------------------|
+| `name`            | Yes      | string       |           | The name of the fan in Home Assistant.                                      |
+| `platform`        | Yes      | string       |           | Must be `quiet_cool`.                                                       |
+| `cs_pin`          | Yes      | int          |           | SPI chip select pin for CC1101.                                             |
+| `gdo0_pin`        | Yes      | int          |           | GDO0 pin from CC1101 (used for TX status).                                  |
+| `gdo2_pin`        | Yes      | int          |           | GDO2 pin from CC1101 (can be -1 if unused).                                 |
+| `remote_id`       | Yes      | list[hex]    |           | 7-byte unique ID for your remote (see above).                               |
+| `center_freq_mhz` | No       | float        | 433.897    | Center frequency in MHz for RF transmission.                                |
+| `deviation_khz`   | No       | float        | 10         | Frequency deviation (spread) in kHz for FSK modulation.                     |
+
+**Note:** You must also define the SPI bus pins in your YAML:
+
+```yaml
+spi:
+  clk_pin: 18
+  mosi_pin: 23
+  miso_pin: 19
 ```
 
 ## Recent Improvements
