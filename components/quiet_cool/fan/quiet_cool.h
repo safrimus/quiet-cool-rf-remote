@@ -30,6 +30,9 @@ namespace esphome {
 		this->center_freq_mhz = center_freq_mhz;
 		this->deviation_khz = deviation_khz;
 	    }
+            void set_wake_code(uint8_t wake_code) {
+	        this->wake_code_ = wake_code;
+	    }
 
         protected:
             void control(const fan::FanCall &call) override;
@@ -45,6 +48,7 @@ namespace esphome {
             float speed_{0.0f};
             bool pins_set_{false};
             std::array<uint8_t, 7> remote_id_{{0x2D, 0xD4, 0x06, 0xCB, 0x00, 0xF7, 0xF2}};
+            uint8_t wake_code_{0x66};
         public:
             void set_remote_id(const std::vector<uint8_t> &remote_id) {
                 for (size_t i = 0; i < 7 && i < remote_id.size(); ++i) remote_id_[i] = remote_id[i];
