@@ -61,7 +61,7 @@ class QuietCool {
     // REMOTE_ID is now the name for the unique remote identifier
 
   public:
-    QuietCool(uint8_t csn, uint8_t gdo0, uint8_t gdo2, uint8_t sck, uint8_t miso, uint8_t mosi, const uint8_t* remote_id_in, float freq_mhz, float deviation_khz, wake_code);
+    QuietCool(uint8_t csn, uint8_t gdo0, uint8_t gdo2, uint8_t sck, uint8_t miso, uint8_t mosi, const uint8_t* remote_id_in, float freq_mhz, float deviation_khz, uint8_t wake_code);
     void begin();
     void send(QuietCoolSpeed speed, QuietCoolDuration duration);
 };
