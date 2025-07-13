@@ -123,7 +123,7 @@ const uint8_t QuietCool::getCommand(QuietCoolSpeed speed, QuietCoolDuration dura
     return result;
 }
 
-    QuietCool::QuietCool(uint8_t csn, uint8_t gdo0, uint8_t gdo2, uint8_t sck, uint8_t miso, uint8_t mosi, const uint8_t* remote_id_in, float center_freq, float deviation_khz) : 
+    QuietCool::QuietCool(uint8_t csn, uint8_t gdo0, uint8_t gdo2, uint8_t sck, uint8_t miso, uint8_t mosi, const uint8_t* remote_id_in, float center_freq, float deviation_khz, uint8_t wake_code) : 
     csn_pin(csn),
     gdo0_pin(gdo0),
     gdo2_pin(gdo2),
@@ -131,7 +131,8 @@ const uint8_t QuietCool::getCommand(QuietCoolSpeed speed, QuietCoolDuration dura
     miso_pin(miso),
     mosi_pin(mosi),
     center_freq_mhz(center_freq),
-    deviation_khz(deviation_khz)
+    deviation_khz(deviation_khz),
+    wake_code(wake_code)
 {
     for (int i = 0; i < 7; ++i) remote_id[i] = remote_id_in[i];
 }
@@ -206,6 +207,9 @@ void QuietCool::begin() {
 }
 
 void QuietCool::send(QuietCoolSpeed speed, QuietCoolDuration duration) {
+    ESP_LOGI(TAG, "send cmd=%02x ", wake_code);
+    sendPacket(wake_code);
+    delay(1000);
     ESP_LOGI(TAG, "send(0x%02x, %0x%02x)", speed, duration);
     const uint8_t cmd_code = getCommand(speed, duration);
     ESP_LOGI(TAG, "cmd=%02x ", cmd_code);
